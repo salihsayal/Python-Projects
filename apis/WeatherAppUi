@@ -3,6 +3,7 @@ from WeatherApi import fetchWeatherData
 from WeatherDisplay import displayWeather
 import argparse
 import json
+from redisConnection import getCache, setCache
 
 parser = argparse.ArgumentParser(prog='WeatherAppUi')
 parser.add_argument('--Country', required=True, help='Name of the Country')
@@ -10,8 +11,16 @@ parser.add_argument('--City', required=True, help='Name of the City')
 args = parser.parse_args()
 
 def main():  
-    response = fetchWeatherData(args.Country, args.City)
-    displayWeather(response)
+    cacheResponse = getCache(args.Country, args.City)
+    if cacheResponse is None:
+        response = fetchWeatherData(args.Country, args.City)
+        setCache(args.Country, args.City, response)
+        print(response)
+        print("CacheMiss")
+    else:
+        response = cacheResponse
+        print(response)
+        print("CacheHit")
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 import sys
 import requests
+from WeatherDisplay import displayWeather
 
 load_dotenv()
 api_key = os.getenv("WEATHER_API_KEY")
@@ -14,8 +15,8 @@ def fetchWeatherData(country, city):
         res.raise_for_status()
         response = res.json()
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {res}")
+        print(f"Request failed")
         sys.exit(1)
 
-    return response
+    return displayWeather(response)
 	
